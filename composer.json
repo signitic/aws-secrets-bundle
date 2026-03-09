@@ -6,11 +6,11 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "symfony/dependency-injection": "^7.0",
+        "symfony/dependency-injection": "^7.4",
         "ext-json": "*"
     },
     "require-dev": {
-        "symfony/framework-bundle": "^7.0",
+        "symfony/framework-bundle": "^7.4",
         "phpunit/phpunit": "^9.5",
         "symfony/phpunit-bridge": "^5.3 | ^4.0",
         "phpspec/prophecy-phpunit": "^2.0",
