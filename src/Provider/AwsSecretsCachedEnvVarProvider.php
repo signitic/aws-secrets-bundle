@@ -12,13 +12,18 @@ class AwsSecretsCachedEnvVarProvider implements AwsSecretsEnvVarProviderInterfac
     const CACHE_KEY_PREFIX = 'aws_secret';
     private CacheItemPoolInterface $cacheItemPool;
     private AwsSecretsEnvVarProviderInterface $decorated;
-    private int $ttl;
+    private ?int $ttl;
 
-    public function __construct(CacheItemPoolInterface $cacheItemPool, AwsSecretsEnvVarProviderInterface $decorated, int $ttl = 60)
+    public function __construct(CacheItemPoolInterface $cacheItemPool, AwsSecretsEnvVarProviderInterface $decorated, ?int $ttl = 60)
     {
         $this->cacheItemPool = $cacheItemPool;
         $this->decorated = $decorated;
         $this->ttl = $ttl;
+    }
+
+    public static function generateCacheKey(string $name): string
+    {
+        return self::CACHE_KEY_PREFIX . '.' . md5($name);
     }
 
     /**
@@ -30,7 +35,7 @@ class AwsSecretsCachedEnvVarProvider implements AwsSecretsEnvVarProviderInterfac
      */
     public function get(string $name): string
     {
-        $cacheKey = self::CACHE_KEY_PREFIX . '.' . md5($name);
+        $cacheKey = self::generateCacheKey($name);
         $cacheItem = $this->cacheItemPool->getItem($cacheKey);
 
         if ($cacheItem->isHit()) {

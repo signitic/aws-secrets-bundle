@@ -29,12 +29,21 @@ class AwsSecretsCachedEnvVarProviderTest extends TestCase
     }
 
     /** @test */
+    public function it_generates_cache_key(): void
+    {
+        $this->assertSame(
+            AwsSecretsCachedEnvVarProvider::CACHE_KEY_PREFIX.'.'.md5('key'),
+            AwsSecretsCachedEnvVarProvider::generateCacheKey('key')
+        );
+    }
+
+    /** @test */
     public function it_returns_cached_item_if_hit(): void
     {
         $cacheItem = $this->prophesize(CacheItemInterface::class);
         $cacheItem->isHit()->willReturn(true);
         $cacheItem->get()->willReturn('value');
-        $this->cacheItemPool->getItem(AwsSecretsCachedEnvVarProvider::CACHE_KEY_PREFIX.'.'.md5('key'))
+        $this->cacheItemPool->getItem(AwsSecretsCachedEnvVarProvider::generateCacheKey('key'))
             ->willReturn($cacheItem);
 
         $result = $this->provider->get('key');
@@ -50,11 +59,33 @@ class AwsSecretsCachedEnvVarProviderTest extends TestCase
         $cacheItem->set('value')->shouldBeCalled()->willReturn($cacheItem);
         $cacheItem->expiresAfter(60)->shouldBeCalled()->willReturn($cacheItem);
         $this->cacheItemPool->save($cacheItem->reveal())->shouldBeCalled();
-        $this->cacheItemPool->getItem(AwsSecretsCachedEnvVarProvider::CACHE_KEY_PREFIX.'.'.md5('key'))
+        $this->cacheItemPool->getItem(AwsSecretsCachedEnvVarProvider::generateCacheKey('key'))
             ->willReturn($cacheItem);
         $this->decorated->get('key')->willReturn('value');
 
         $result = $this->provider->get('key');
+        $this->assertEquals('value', $result);
+    }
+
+    /** @test */
+    public function it_supports_infinite_ttl(): void
+    {
+        $provider = new AwsSecretsCachedEnvVarProvider(
+            $this->cacheItemPool->reveal(),
+            $this->decorated->reveal(),
+            null
+        );
+
+        $cacheItem = $this->prophesize(CacheItemInterface::class);
+        $cacheItem->isHit()->shouldBeCalled()->willReturn(false);
+        $cacheItem->set('value')->shouldBeCalled()->willReturn($cacheItem);
+        $cacheItem->expiresAfter(null)->shouldBeCalled()->willReturn($cacheItem);
+        $this->cacheItemPool->save($cacheItem->reveal())->shouldBeCalled();
+        $this->cacheItemPool->getItem(AwsSecretsCachedEnvVarProvider::generateCacheKey('key'))
+            ->willReturn($cacheItem);
+        $this->decorated->get('key')->willReturn('value');
+
+        $result = $provider->get('key');
         $this->assertEquals('value', $result);
     }
 }
