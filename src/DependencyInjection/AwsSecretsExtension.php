@@ -50,16 +50,21 @@ class AwsSecretsExtension extends Extension
         $container->setAlias('aws_secrets.client', 'aws_secrets.secrets_manager_client')
             ->setPublic(true);
 
-        if ($configs['cache'] === 'apcu') {
+        if ($configs['cache'] === 'array') {
+            $definition = new Definition(ArrayAdapter::class);
+            $definition->addTag('cache.pool');
+            $container->setDefinition('aws_secrets.cache', $definition);
+        } elseif ($configs['cache'] === 'apcu') {
             $definition = new ChildDefinition('cache.adapter.apcu');
+            $definition->addTag('cache.pool');
+            $container->setDefinition('aws_secrets.cache', $definition);
         } elseif ($configs['cache'] === 'filesystem') {
             $definition = new ChildDefinition('cache.adapter.filesystem');
+            $definition->addTag('cache.pool');
+            $container->setDefinition('aws_secrets.cache', $definition);
         } else {
-            $definition = new Definition(ArrayAdapter::class);
+            $container->setAlias('aws_secrets.cache', $configs['cache'])->setPublic(false);
         }
-
-        $definition->addTag('cache.pool');
-        $container->setDefinition('aws_secrets.cache', $definition);
 
         $container->register('aws_secrets.env_var_provider', AwsSecretsEnvVarProvider::class)
             ->setArgument('$secretsManagerClient', new Reference('aws_secrets.client'))

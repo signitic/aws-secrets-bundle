@@ -61,7 +61,8 @@ aws_secrets:
     credentials: 
         key: ~
         secret: ~
-  cache: 'array'      # Can be one of the following: apcu, array, filesystem. Default is array.
+  cache: 'array'      # Cache storage: apcu, array, filesystem, or a cache pool service id like cache.app. Default is array.
+  ttl: 60             # Cache TTL in seconds. Use ~ for no expiration.
   delimiter: ','      # Delimiter to separate key from secret name.
   ignore: false       # Pass through AWS (for local dev environments set to "true").
 ```

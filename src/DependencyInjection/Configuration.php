@@ -36,7 +36,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-            ->enumNode('cache')->values(['apcu', 'filesystem', 'array'])->defaultValue('array')->end()
+            ->scalarNode('cache')->defaultValue('array')->cannotBeEmpty()->end()
             ->scalarNode('ttl')->defaultValue(60)->end()
             ->scalarNode('delimiter')->defaultValue(',')->end()
             ->scalarNode('ignore')->defaultFalse()->end();
