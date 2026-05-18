@@ -6,6 +6,7 @@ namespace Constup\AwsSecretsBundle\Tests;
 
 use Constup\AwsSecretsBundle\AwsSecretsEnvVarProcessor;
 use Constup\AwsSecretsBundle\Provider\AwsSecretsEnvVarProviderInterface;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -29,9 +30,7 @@ class AwsSecretsEnvVarProcessorTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_calls_closure_if_ignore(): void
     {
         $this->processor->setIgnore(true);
@@ -50,9 +49,7 @@ class AwsSecretsEnvVarProcessorTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_string_for_key(): void
     {
         $this->provider->get('prefix/db')->willReturn('{"key":"value"}');
@@ -73,9 +70,7 @@ class AwsSecretsEnvVarProcessorTest extends TestCase
         $this->assertEquals('value', $value);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function it_returns_string(): void
     {
         $callCount = 0;

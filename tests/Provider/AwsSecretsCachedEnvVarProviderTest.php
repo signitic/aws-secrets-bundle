@@ -4,6 +4,7 @@ namespace Constup\AwsSecretsBundle\Tests\Provider;
 
 use Constup\AwsSecretsBundle\Provider\AwsSecretsCachedEnvVarProvider;
 use Constup\AwsSecretsBundle\Provider\AwsSecretsEnvVarProviderInterface;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Cache\CacheItemInterface;
@@ -28,7 +29,7 @@ class AwsSecretsCachedEnvVarProviderTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_generates_cache_key(): void
     {
         $this->assertSame(
@@ -37,7 +38,7 @@ class AwsSecretsCachedEnvVarProviderTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_cached_item_if_hit(): void
     {
         $cacheItem = $this->prophesize(CacheItemInterface::class);
@@ -51,7 +52,7 @@ class AwsSecretsCachedEnvVarProviderTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_cache_item_and_returns_decorated_value_on_no_hit(): void
     {
         $cacheItem = $this->prophesize(CacheItemInterface::class);
@@ -67,7 +68,7 @@ class AwsSecretsCachedEnvVarProviderTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    /** @test */
+    #[Test]
     public function it_supports_infinite_ttl(): void
     {
         $provider = new AwsSecretsCachedEnvVarProvider(

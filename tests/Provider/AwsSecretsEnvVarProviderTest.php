@@ -5,6 +5,7 @@ namespace Constup\AwsSecretsBundle\Tests\Provider;
 use Aws\Result;
 use Aws\SecretsManager\SecretsManagerClient;
 use Constup\AwsSecretsBundle\Provider\AwsSecretsEnvVarProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -21,7 +22,7 @@ class AwsSecretsEnvVarProviderTest extends TestCase
         $this->provider = new AwsSecretsEnvVarProvider($this->secretsManagerClient->reveal());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_value_from_secrets_manager(): void
     {
         $result = $this->prophesize(Result::class);

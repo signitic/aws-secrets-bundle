@@ -6,6 +6,7 @@ namespace Constup\AwsSecretsBundle\Tests\Provider;
 
 use Constup\AwsSecretsBundle\Provider\AwsSecretsArrayEnvVarProvider;
 use Constup\AwsSecretsBundle\Provider\AwsSecretsEnvVarProviderInterface;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -22,7 +23,7 @@ class AwsSecretsArrayEnvVarProviderTest extends TestCase
         $this->provider = new AwsSecretsArrayEnvVarProvider($this->decorated->reveal());
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_decorated_value(): void
     {
         $this->decorated->get('key')->shouldBeCalledTimes(1)->willReturn('value');
@@ -30,7 +31,7 @@ class AwsSecretsArrayEnvVarProviderTest extends TestCase
         $this->assertEquals('value', $result);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_cached_value_on_second_call(): void
     {
         $this->decorated->get('key')->shouldBeCalledTimes(1)->willReturn('value');
